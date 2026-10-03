@@ -31,7 +31,7 @@ Además de las actividades de este repositorio, hay propuestas interactivas crea
 
 - [Tira al Payaso](https://view.genially.com/6a8b3098ff3834efcbe442c0) · Ciclo Múltiple
 - [Ahorcado Matemático](https://view.genially.com/69627af528bcb333af45d8da) · Ciclo Múltiple
-- [El Precio Justo](https://view.genially.com/6a09fc3f7807e70a86fa260c) · Multi Ciclo
+- [El Precio Justo](https://view.genially.com/6a09fc3f7807e70a86fa260c) · Ciclo Múltiple
 
 ---
 

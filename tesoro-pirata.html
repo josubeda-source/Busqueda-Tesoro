@@ -442,6 +442,8 @@ body { font-family: 'Crimson Text', Georgia, serif; background: #0d1f2d; min-hei
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // ===== DATA =====
 const postas = [
@@ -599,45 +601,47 @@ function showVictoryAgain() {
 
 function downloadCert() {
   const box = document.getElementById('cert-box');
-  // Use print as fallback for download
-  const printWindow = window.open('', '_blank');
-  printWindow.document.write('<html><head><title>Certificado - ' + playerName + '</title>');
-  printWindow.document.write('<style>');
-  printWindow.document.write('@import url("https://fonts.googleapis.com/css2?family=Pirata+One&family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;1,400&display=swap");');
-  printWindow.document.write('body{margin:0;padding:20px;background:#f4e4b8;font-family:Georgia,serif;display:flex;justify-content:center;align-items:center;min-height:100vh;}');
-  printWindow.document.write('.cert{background:#f4e4b8;border:8px double #c9860a;outline:3px solid #2c1810;border-radius:12px;max-width:560px;width:100%;padding:32px 28px;text-align:center;position:relative;}');
-  printWindow.document.write('.cert::before,.cert::after{content:"✦ ✦ ✦";display:block;font-size:1rem;color:#c9860a;letter-spacing:0.5em;margin-bottom:8px;}');
-  printWindow.document.write('.title{font-family:"Pirata One",cursive;font-size:2rem;color:#2c1810;margin-bottom:6px;}');
-  printWindow.document.write('.sub{font-family:"Cinzel",serif;font-size:0.72rem;color:#c9860a;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:20px;}');
-  printWindow.document.write('.otorga{font-size:1rem;color:#4a2e1a;margin-bottom:6px;}');
-  printWindow.document.write('.name{font-family:"Pirata One",cursive;font-size:2.2rem;color:#2c1810;border-bottom:2px solid #c9860a;padding-bottom:6px;margin-bottom:16px;display:inline-block;}');
-  printWindow.document.write('.body{font-size:0.92rem;color:#4a2e1a;line-height:1.6;margin-bottom:16px;}');
-  printWindow.document.write('.date{font-family:"Cinzel",serif;font-size:0.72rem;color:#c9860a;margin-bottom:20px;}');
-  printWindow.document.write('.firma{display:flex;justify-content:center;gap:40px;margin-top:16px;}');
-  printWindow.document.write('.firma-item{text-align:center;}');
-  printWindow.document.write('.firma-line{width:120px;border-bottom:1px solid #2c1810;margin:0 auto 4px;}');
-  printWindow.document.write('.firma-label{font-family:"Cinzel",serif;font-size:0.62rem;color:#4a2e1a;letter-spacing:0.08em;}');
-  printWindow.document.write('.seal{font-size:3rem;margin:10px 0;}');
-  printWindow.document.write('.footer{margin-top:12px;font-family:"Cinzel",serif;font-size:0.62rem;color:#c9860a;letter-spacing:0.1em;}');
-  printWindow.document.write('@media print{body{padding:0;}@page{margin:1cm;}}');
-  printWindow.document.write('</style></head><body>');
-  const now = new Date();
-  const opts = { year:'numeric', month:'long', day:'numeric' };
-  const fecha = 'San Rafael, Mendoza, ' + now.toLocaleDateString('es-AR', opts);
-  printWindow.document.write('<div class="cert">');
-  printWindow.document.write('<div class="seal">🏅</div>');
-  printWindow.document.write('<div class="title">Certificado de Logro</div>');
-  printWindow.document.write('<div class="sub">Búsqueda del Tesoro · Matemática</div>');
-  printWindow.document.write('<div class="otorga">Este certificado se otorga a</div>');
-  printWindow.document.write('<div class="name">' + playerName + '</div><br>');
-  printWindow.document.write('<div class="body">por haber completado exitosamente las <strong>10 postas matemáticas</strong> de la Búsqueda del Tesoro, demostrando dominio en distintos temas de <strong>Matemática</strong> y conquistando el <em>Mar de los Números Perdidos</em>.</div>');
-  printWindow.document.write('<div class="date">' + fecha + '</div>');
-  printWindow.document.write('<div class="firma"><div class="firma-item"><div class="firma-line"></div><div class="firma-label">Prof. José Ubeda</div></div><div class="firma-item"><div class="firma-line"></div><div class="firma-label">' + playerName + '</div></div></div>');
-  printWindow.document.write('<div class="footer">CEBJA N.º 3-066 "Profesora Norma Susana Díaz" · San Rafael, Mendoza</div>');
-  printWindow.document.write('</div>');
-  printWindow.document.write('<script>window.onload=function(){window.print();}<\/script>');
-  printWindow.document.write('</body></html>');
-  printWindow.document.close();
+  const btn = document.querySelector('.btn-download');
+  if (typeof html2canvas === 'undefined' || !window.jspdf) {
+    alert('No se pudo generar el PDF. Revisa tu conexión a internet e inténtalo de nuevo.');
+    return;
+  }
+  const textoOriginal = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳ Generando PDF...';
+
+  const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(() => html2canvas(box, { scale: 2, backgroundColor: null, useCORS: true }))
+    .then(canvas => {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const pageW = pdf.internal.pageSize.getWidth();   // 297
+      const pageH = pdf.internal.pageSize.getHeight();  // 210
+      const margin = 10;
+
+      // Fondo de pergamino para toda la hoja
+      pdf.setFillColor(244, 228, 184);
+      pdf.rect(0, 0, pageW, pageH, 'F');
+
+      // Ajustar el certificado a la hoja sin deformarlo
+      const maxW = pageW - margin * 2;
+      const maxH = pageH - margin * 2;
+      const ratio = Math.min(maxW / canvas.width, maxH / canvas.height);
+      const w = canvas.width * ratio;
+      const h = canvas.height * ratio;
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', (pageW - w) / 2, (pageH - h) / 2, w, h);
+
+      const nombre = (playerName || 'Pirata').replace(/[\\/:*?"<>|]/g, '').trim();
+      pdf.save('Certificado - ' + nombre + '.pdf');
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Ocurrió un error al generar el PDF. Inténtalo de nuevo.');
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.textContent = textoOriginal;
+    });
 }
 
 // ===== FIREWORKS =====

@@ -207,7 +207,17 @@
 (function () {
   // ── CONFIGURACIÓN: si alguna vez cambiás de usuario o de repo, actualizá esto ──
   var OWNER = "josubeda-source";
-  var REPO  = "Busqueda-Tesoro";
+  var REPO  = "Matematica-Recreativa";
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // ── ACTIVIDADES EXTERNAS (Genially, etc.) ────────────────────────────────────
+  // Para sumar una: copiá una línea, cambiá el título y pegá el enlace.
+  // Aparecen al final del menú y abren en una pestaña nueva.
+  var EXTERNAS = [
+    { title: "Tira al Payaso",      url: "https://view.genially.com/6a8b3098ff3834efcbe442c0", tag: "GENIALLY" },
+    { title: "Ahorcado Matemático", url: "https://view.genially.com/69627af528bcb333af45d8da", tag: "GENIALLY" },
+    { title: "El Precio Justo",     url: "https://view.genially.com/6a09fc3f7807e70a86fa260c", tag: "GENIALLY" }
+  ];
   // ─────────────────────────────────────────────────────────────────────────────
 
   var listEl = document.getElementById("list");
@@ -230,6 +240,28 @@
     return base ? base.toUpperCase() : "ACTIVIDAD";
   }
 
+  function makeCard(tag, title, desc, href, external) {
+    var a = document.createElement("a");
+    a.className = "item";
+    a.href = href;
+    if (external) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+    a.innerHTML =
+      '<span class="tag">' + tag + '</span>' +
+      '<span class="item-body">' +
+        '<p class="item-title">' + title + '</p>' +
+        '<p class="item-desc">' + desc + '</p>' +
+      '</span>' +
+      '<span class="arrow">' + (external ? '↗' : '→') + '</span>';
+    return a;
+  }
+
+  // Las externas se muestran siempre, aunque falle la lista de GitHub.
+  function appendExternas() {
+    EXTERNAS.forEach(function (e) {
+      listEl.appendChild(makeCard(e.tag || "ENLACE", e.title, "genially.com", e.url, true));
+    });
+  }
+
   fetch("https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/")
     .then(function (res) {
       if (!res.ok) throw new Error("api-error");
@@ -243,8 +275,8 @@
       }).sort(function (a, b) { return a.name.localeCompare(b.name); });
 
       if (htmlFiles.length === 0) {
-        stateEl.className = "state";
-        stateEl.textContent = "Todavía no hay actividades publicadas.";
+        if (EXTERNAS.length) { stateEl.remove(); appendExternas(); }
+        else { stateEl.className = "state"; stateEl.textContent = "Todavía no hay actividades publicadas."; }
         return;
       }
 
@@ -267,22 +299,19 @@
       Promise.all(promises).then(function (items) {
         listEl.innerHTML = "";
         items.forEach(function (item) {
-          var a = document.createElement("a");
-          a.className = "item";
-          a.href = item.name;
-          a.innerHTML =
-            '<span class="tag">' + tagFromFilename(item.name) + '</span>' +
-            '<span class="item-body">' +
-              '<p class="item-title">' + item.title + '</p>' +
-              '<p class="item-desc">' + item.name + '</p>' +
-            '</span>' +
-            '<span class="arrow">→</span>';
-          listEl.appendChild(a);
+          listEl.appendChild(makeCard(tagFromFilename(item.name), item.title, item.name, item.name, false));
         });
+        appendExternas();
       });
     })
     .catch(function () {
-      showError("No se pudo cargar la lista de actividades. Probá recargar la página.");
+      if (EXTERNAS.length) {
+        // Si GitHub no responde, igual mostramos las actividades de Genially.
+        stateEl.remove();
+        appendExternas();
+      } else {
+        showError("No se pudo cargar la lista de actividades. Probá recargar la página.");
+      }
     });
 })();
 </script>

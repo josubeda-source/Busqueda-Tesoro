@@ -77,37 +77,71 @@
 
   /* ── Sección plegable "Sobre este espacio" ── */
   .about{
-    margin-top:22px;
-    border:1px solid var(--board-line);
-    background:rgba(255,255,255,0.02);
+    margin-top:24px;
+    border:1px solid var(--ochre-dim);
+    border-left:4px solid var(--ochre);
+    background:linear-gradient(90deg, rgba(217,164,65,0.16), rgba(217,164,65,0.05));
+    box-shadow:0 0 0 0 rgba(217,164,65,0.45);
+    animation:glow 2.8s ease-in-out infinite;
+  }
+
+  .about[open]{ animation:none; box-shadow:none; }
+
+  @keyframes glow{
+    0%,100%{ box-shadow:0 0 0 0 rgba(217,164,65,0.40); }
+    50%{ box-shadow:0 0 0 7px rgba(217,164,65,0); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .about{ animation:none; }
   }
 
   .about summary{
     cursor:pointer;
     list-style:none;
-    padding:12px 16px;
-    font-family:'JetBrains Mono', monospace;
-    font-size:13px;
-    letter-spacing:.06em;
-    color:var(--chalk-dim);
+    padding:16px 18px;
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:14px;
   }
 
   .about summary::-webkit-details-marker{ display:none; }
 
-  .about summary::after{
-    content:"+";
-    margin-left:auto;
-    color:var(--ochre);
+  .about-text{ flex:1; min-width:0; }
+
+  .about-title{
+    display:block;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
     font-size:18px;
-    line-height:1;
+    color:var(--chalk);
   }
 
-  .about[open] summary::after{ content:"–"; }
+  .about-hint{
+    display:block;
+    margin-top:2px;
+    font-size:13.5px;
+    color:var(--chalk-dim);
+  }
 
-  .about summary:hover{ color:var(--chalk); }
+  .about-icon{
+    flex-shrink:0;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:var(--ochre);
+    color:var(--board);
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    font-size:20px;
+    line-height:32px;
+    text-align:center;
+    transition:transform .2s ease;
+  }
+
+  .about[open] .about-icon{ transform:rotate(45deg); }
+
+  .about summary:hover .about-title{ color:var(--ochre); }
 
   .about summary:focus-visible{
     outline:2px solid var(--ochre);
@@ -116,7 +150,7 @@
 
   .about-body{
     padding:4px 20px 20px;
-    border-top:1px solid var(--board-line);
+    border-top:1px solid var(--ochre-dim);
     color:var(--chalk-dim);
     font-size:15px;
     line-height:1.65;
@@ -245,7 +279,14 @@
     <h1>Actividades <span class="eq">=</span> Matemática</h1>
 
     <details class="about">
-      <summary>ℹ️ Sobre este espacio</summary>
+      <summary>
+        <span class="tag">INFO</span>
+        <span class="about-text">
+          <span class="about-title">Sobre este espacio</span>
+          <span class="about-hint">Tocá para conocer de qué se trata esta propuesta</span>
+        </span>
+        <span class="about-icon">+</span>
+      </summary>
       <div class="about-body">
         <p>Actividades recreativas e interactivas para el área de Matemática, pensadas para que los estudiantes participen, jueguen y aprendan haciendo.</p>
         <p>La matemática no vive solo en el pizarrón ni en la carpeta: también está en un juego, en un mapa, en un desafío o en una producción propia. Estas propuestas buscan acercarla desde otros instrumentos y otros lenguajes, para que cada estudiante encuentre su propio camino para entenderla y animarse a resolverla.</p>

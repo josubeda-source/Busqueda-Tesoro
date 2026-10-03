@@ -75,13 +75,65 @@
 
   h1 .eq{ color:var(--ochre); }
 
-  .sub{
-    color:var(--chalk-dim);
-    font-size:16px;
-    line-height:1.6;
-    max-width:52ch;
-    margin:0;
+  /* ── Sección plegable "Sobre este espacio" ── */
+  .about{
+    margin-top:22px;
+    border:1px solid var(--board-line);
+    background:rgba(255,255,255,0.02);
   }
+
+  .about summary{
+    cursor:pointer;
+    list-style:none;
+    padding:12px 16px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    letter-spacing:.06em;
+    color:var(--chalk-dim);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .about summary::-webkit-details-marker{ display:none; }
+
+  .about summary::after{
+    content:"+";
+    margin-left:auto;
+    color:var(--ochre);
+    font-size:18px;
+    line-height:1;
+  }
+
+  .about[open] summary::after{ content:"–"; }
+
+  .about summary:hover{ color:var(--chalk); }
+
+  .about summary:focus-visible{
+    outline:2px solid var(--ochre);
+    outline-offset:2px;
+  }
+
+  .about-body{
+    padding:4px 20px 20px;
+    border-top:1px solid var(--board-line);
+    color:var(--chalk-dim);
+    font-size:15px;
+    line-height:1.65;
+  }
+
+  .about-body h2{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--ochre);
+    margin:20px 0 6px;
+  }
+
+  .about-body p{ margin:0 0 8px; }
+  .about-body ul{ margin:0; padding-left:20px; }
+  .about-body li{ margin-bottom:6px; }
+  .about-body strong{ color:var(--chalk); font-weight:500; }
 
   .list{
     display:flex;
@@ -181,6 +233,7 @@
   @media (max-width:480px){
     .item{ padding:16px; gap:12px; }
     .tag{ display:none; }
+    .about-body{ padding:4px 16px 16px; }
   }
 </style>
 </head>
@@ -190,7 +243,26 @@
   <header>
     <div class="eyebrow">Prof. José Ubeda · 1º año secundaria</div>
     <h1>Actividades <span class="eq">=</span> Matemática</h1>
-    <p class="sub">Haz click sobre las tarjetas para acceder a las actividades</p>
+
+    <details class="about">
+      <summary>ℹ️ Sobre este espacio</summary>
+      <div class="about-body">
+        <p>Actividades recreativas e interactivas para el área de Matemática, pensadas para que los estudiantes participen, jueguen y aprendan haciendo.</p>
+        <p>La matemática no vive solo en el pizarrón ni en la carpeta: también está en un juego, en un mapa, en un desafío o en una producción propia. Estas propuestas buscan acercarla desde otros instrumentos y otros lenguajes, para que cada estudiante encuentre su propio camino para entenderla y animarse a resolverla.</p>
+
+        <h2>¿Para quién son?</h2>
+        <p>Principalmente para <strong>primer año</strong>, aunque no todas son exclusivas de ese nivel. Algunas son de <strong>ciclo múltiple</strong>: más sencillas, se pueden usar con estudiantes de distintos años o trayectos, según lo que cada grupo necesite repasar o practicar.</p>
+
+        <h2>¿Qué hay acá?</h2>
+        <ul>
+          <li><strong>Actividades recreativas:</strong> juegos y desafíos interactivos, como la <em>Búsqueda del Tesoro</em>, donde se resuelven problemas de distintos temas para avanzar.</li>
+          <li><strong>Actividades en Genially:</strong> propuestas interactivas creadas en esa plataforma, que se abren desde un enlace.</li>
+        </ul>
+
+        <h2>¿Cómo se usa?</h2>
+        <p>Elegí la actividad que corresponde a la clase y listo. Funciona desde la computadora o el celular, sin registrarse ni instalar nada.</p>
+      </div>
+    </details>
   </header>
 
   <div class="list" id="list">
